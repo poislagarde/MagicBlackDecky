@@ -28,11 +28,14 @@ import initI18n from "./i18n";
 import { loadBooleanSetting, loadNumberSetting, saveSetting } from "./settings";
 import { StateNumber } from "./state";
 import PanelSocialButton from "./socialButton";
+import { KeepAwakeController } from "./keepAwakeCore";
+import { createKeepAwakeController, KEEP_AWAKE_SETTING, loadKeepAwakeEnabled } from "./keepAwake";
 
 const Content: FC<{
   overlayModeState: StateNumber;
   overlayOpacityState: StateNumber;
-}> = ({ overlayModeState, overlayOpacityState }) => {
+  keepAwake: KeepAwakeController;
+}> = ({ overlayModeState, overlayOpacityState, keepAwake }) => {
 
   const [overlayMode, setOverlayMode] = useState<number>(overlayModeState.GetState());
   const [allowTouch, setAllowTouch] = useState<boolean>(false);
@@ -40,6 +43,7 @@ const Content: FC<{
   const [muteSound, setMuteSound] = useState<boolean>(false);
   const [closeOnAnyKey, setCloseOnAnyKey] = useState<boolean>(false);
   const [closeOnWake, setCloseOnWake] = useState<boolean>(false);
+  const [keepAwakeEnabled, setKeepAwakeEnabled] = useState<boolean>(false);
   const [overlayOpacity, setOverlayOpacity] = useState<number>(overlayOpacityState.GetState());
   const overlayBusy = overlayMode !== 0;
   const overlayEnabled = overlayMode === 1;
@@ -67,6 +71,7 @@ const Content: FC<{
       setMuteSound(await loadBooleanSetting("mute_sound", false));
       setCloseOnAnyKey(await loadBooleanSetting("off_anykey", false));
       setCloseOnWake(await loadBooleanSetting("off_upon_waking", false));
+      setKeepAwakeEnabled(await loadKeepAwakeEnabled());
       const opacitySetting = await loadNumberSetting("overlay_opacity");
       const resolvedOpacity = opacitySetting == null ? 1 : Math.min(1, Math.max(0, opacitySetting));
       setOverlayOpacity(resolvedOpacity);
@@ -185,6 +190,20 @@ const Content: FC<{
 
         <PanelSectionRow>
           <ToggleField
+            checked={keepAwakeEnabled}
+            label={t("toggle_keepawake_label")}
+            description={t("toggle_keepawake_description")}
+            onChange={(b) => {
+              // Stays usable while the overlay is on so the option can be turned off (restoring at once).
+              setKeepAwakeEnabled(b);
+              void saveSetting(KEEP_AWAKE_SETTING, b);
+              void keepAwake.setEnabled(b);
+            }}
+          />
+        </PanelSectionRow>
+
+        <PanelSectionRow>
+          <ToggleField
             checked={muteMic}
             label={t("toggle_mutemic_label")}
             description={t("toggle_mutemic_description")}
@@ -219,14 +238,24 @@ export default definePlugin(() => {
   initI18n();
   const overlayState = new StateNumber(0);
   const overlayOpacityState = new StateNumber(1);
+
+  // Every way the overlay turns on or off (panel toggles, "Disable on any key", "Disable on wake")
+  // goes through overlayState, so one listener covers them all.
+  const keepAwake = createKeepAwakeController();
+  const onOverlayModeChanged = (mode: number) => { void keepAwake.setOverlayActive(mode !== 0); };
+  overlayState.onStateChanged(onOverlayModeChanged);
+  void keepAwake.init(loadKeepAwakeEnabled);
+
   routerHook.addGlobalComponent("BlackOverlay", () => (<BlackOverlay state={overlayState} opacityState={overlayOpacityState} />));
   return {
     title: <div className={staticClasses.Title}>MagicBlack</div>,
-    content: <Content overlayModeState={overlayState} overlayOpacityState={overlayOpacityState} />,
+    content: <Content overlayModeState={overlayState} overlayOpacityState={overlayOpacityState} keepAwake={keepAwake} />,
     icon: <LogoIcon />,
     onDismount() {
       routerHook.removeRoute("/decky-plugin-test");
       routerHook.removeGlobalComponent("BlackOverlay");
+      overlayState.offStateChanged(onOverlayModeChanged);
+      keepAwake.shutdown();
     },
   };
 });

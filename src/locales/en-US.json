@@ -14,6 +14,8 @@
         "toggle_offanykey_description": "Turns off the overlay when any key is pressed.",
         "toggle_offuponwaking_label": "Disable on wake",
         "toggle_offuponwaking_description": "Turns off the overlay after resuming from sleep.",
+        "toggle_keepawake_label": "Keep Deck awake",
+        "toggle_keepawake_description": "Disable sleep and the screensaver while the overlay is active; restores your settings when it turns off",
         "slider_overlayopacity_label": "Opacity",
         "slider_overlayopacity_description": "Adjust transparent of the overlay",
         "options_header": "Settings",

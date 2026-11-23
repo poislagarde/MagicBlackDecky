@@ -24,6 +24,7 @@ A magic plugin for the Decky Loader that overlays the screen with black color, e
 - Enable or disable the touchscreen
 - Mute or unmute the microphone and speakers
 - Close the overlay on press or wake-up
+- Keep the Deck awake while the overlay is on (fork option, see below)
 
 ## 🚀 Getting started
 
@@ -37,3 +38,9 @@ Now that you have MagicBlack, press <img src="./docs/images/dark/qam.svg#gh-ligh
 ### Reducing Flicker
 
 - To reduce OLED flicker, set the screen brightness to 100%. Then enable the black background and adjust its transparency using the `Opacity` slider to find a comfortable level.
+
+### Keep Deck Awake (fork option)
+
+This fork ([poislagarde/MagicBlackDecky](https://github.com/poislagarde/MagicBlackDecky), branch `keep-awake`) adds a `Keep Deck awake` switch, off by default. When it is on, turning on the black background or the screensaver sets Steam's idle sleep and screensaver timers to `Never`, on battery and when plugged in. When the overlay turns off (switch, any key, or wake), the previous values are put back exactly.
+
+The original values are saved in the plugin's settings before they are changed, so they are restored even after a crash, reboot or plugin reload (on the next plugin load). Turning the option off while the overlay is on restores them immediately. With the option off, the plugin behaves exactly like upstream.

@@ -10,6 +10,7 @@ class Plugin:
 
     async def save_setting(self, key, value):
         self.settings.save(key, value)
+        return True
     
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):

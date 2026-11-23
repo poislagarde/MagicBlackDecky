@@ -43,5 +43,9 @@ class Settings():
             return branch.get(key, False)
         elif key == "overlay_opacity":
             return branch.get(key, "1")
+        elif key == "keep_awake":
+            return branch.get(key, False)
+        elif key == "keep_awake_backup":
+            return branch.get(key, "")
         else:
             return None

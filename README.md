@@ -44,3 +44,5 @@ Now that you have MagicBlack, press <img src="./docs/images/dark/qam.svg#gh-ligh
 This fork ([poislagarde/MagicBlackDecky](https://github.com/poislagarde/MagicBlackDecky), branch `keep-awake`) adds a `Keep Deck awake` switch, off by default. When it is on, turning on the black background or the screensaver sets Steam's idle sleep and screensaver timers to `Never`, on battery and when plugged in. When the overlay turns off (switch, any key, or wake), the previous values are put back exactly.
 
 The original values are saved in the plugin's settings before they are changed, so they are restored even after a crash, reboot or plugin reload (on the next plugin load). Turning the option off while the overlay is on restores them immediately. With the option off, the plugin behaves exactly like upstream.
+
+> This fork is named "MagicBlack Keep Awake" in Decky, so the Decky store never offers to replace it with the original MagicBlack.

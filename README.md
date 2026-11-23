@@ -45,4 +45,4 @@ This fork ([poislagarde/MagicBlackDecky](https://github.com/poislagarde/MagicBla
 
 The original values are saved in the plugin's settings before they are changed, so they are restored even after a crash, reboot or plugin reload (on the next plugin load). Turning the option off while the overlay is on restores them immediately. With the option off, the plugin behaves exactly like upstream.
 
-> This fork is named "MagicBlack Keep Awake" in Decky, so the Decky store never offers to replace it with the original MagicBlack.
+> This fork keeps the name "MagicBlack" so it looks the same in Decky. Freeze its updates in Decky (Settings → Plugins → MagicBlack → Freeze updates) so the store never replaces it with the original.
